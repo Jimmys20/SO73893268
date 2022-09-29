@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    ViewData["Title"] = "Home page";
+
+    var requestToken = Antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+
+<p style="text-align: left; font-size: 12px;">Podstawowe dane</p>
+<p><input id="name" type="text" class="form-control" placeholder="Imię" name="name" /></p>
+<p><input id="surname" type="text" class="form-control" placeholder="Nazwisko" name="surname" /></p>
+<p><input id="mobile" type="text" class="form-control" placeholder="Telefon" name="mobile" /></p>
+<input id="btnWork" type="submit" value="Work" onclick="writeLog()" />
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
+@section Scripts {
+    <script>
+        function writeLog() {
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const mobile = document.getElementById('mobile').value;
+
+            const url = `?handler=UpdatePersonalData&name=${name}&surname=${surname}&mobile=${mobile}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    RequestVerificationToken:
+                        document.getElementById('RequestVerificationToken').value
+                }
+            });
+        }
+    </script>
+}
